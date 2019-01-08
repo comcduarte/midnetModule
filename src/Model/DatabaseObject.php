@@ -49,6 +49,7 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function getArrayCopy()
     {
+        $data = NULL;
         foreach ($this->public_attributes as $var) {
             $data[$var] = $this->{$var};
         }
@@ -95,7 +96,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $sql = new Sql($this->dbAdapter);
         
         $select = new Select();
-        $select->from($this->table);;
+        $select->from($this->table);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         
@@ -120,7 +121,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($insert);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
@@ -160,7 +161,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($update);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
@@ -178,7 +179,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($delete);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
