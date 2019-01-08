@@ -12,6 +12,8 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\Exception\RuntimeException;
+use Zend\Db\Sql\Predicate\Predicate;
+use Zend\Db\Sql\Where;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
@@ -91,12 +93,18 @@ class DatabaseObject implements InputFilterAwareInterface
         return $this->inputFilter;
     }
     
-    public function fetchAll()
+    public function fetchAll(Predicate $predicate = null, array $order = [])
     {
+        if ($predicate == null) {
+            $predicate = new Where();
+        }
+        
         $sql = new Sql($this->dbAdapter);
         
         $select = new Select();
         $select->from($this->table);
+        $select->where($predicate);
+        $select->order($order);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         
