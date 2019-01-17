@@ -17,6 +17,9 @@ use Zend\Db\Sql\Where;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
+    const INACTIVE_STATUS = 0;
+    const ACTIVE_STATUS = 1;
+    
     protected $dbAdapter;
     protected $table;
     protected $inputFilter;
@@ -66,6 +69,18 @@ class DatabaseObject implements InputFilterAwareInterface
     public function setTableName($table)
     {
         $this->table = $table;
+        return $this;
+    }
+    
+    public function getPrimaryKey()
+    {
+        return $this->primary_key;
+    }
+    
+    public function setPrimaryKey($primary_key)
+    {
+        $this->primary_key = $primary_key;
+        return $this;
     }
     
     public function setInputFilter(InputFilterInterface $inputFilter)
