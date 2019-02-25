@@ -14,6 +14,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\Exception\RuntimeException;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Where;
+use Zend\Db\ResultSet\ResultSet;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
@@ -122,14 +123,15 @@ class DatabaseObject implements InputFilterAwareInterface
         $select->order($order);
         
         $statement = $sql->prepareStatementForSqlObject($select);
-        
+        $resultSet = new ResultSet();
         try {
-            $resultSet = $statement->execute();
+            $results = $statement->execute();
+            $resultSet->initialize($results);
         } catch (RuntimeException $e) {
             return $e;
         }
         
-        return $resultSet;
+        return $resultSet->toArray();
     }
 
     public function create()
