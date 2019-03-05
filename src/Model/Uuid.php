@@ -17,5 +17,7 @@ class Uuid
             bindec(substr_replace(sprintf('%016b', mt_rand(0, 65535)), '01', 6, 2)),
             mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535)
         );
+        
+        return $this;
     }
 }
