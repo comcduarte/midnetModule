@@ -3,14 +3,14 @@ namespace Midnet\Form\Element;
 
 use Zend\Db\Sql\Sql as Sql;
 use Zend\Db\Sql\Select as SqlSelect;
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Form\Element\Select;
 use RuntimeException;
-use Midnet\Traits\AdapterTrait;
 
 class DatabaseSelectObject extends Select 
 {
-    use AdapterTrait;
-    
+    use AdapterAwareTrait;
+   
     protected $database_table;
     protected $database_id_column;
     protected $database_value_column;
@@ -31,6 +31,11 @@ class DatabaseSelectObject extends Select
         
         $select = new SqlSelect();
         $select->from($this->database_table);
+        $select->columns([
+            $this->database_id_column => $this->database_id_column, 
+            $this->database_value_column => $this->database_value_column,
+        ]);
+        $select->order($this->database_value_column);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         
@@ -40,8 +45,9 @@ class DatabaseSelectObject extends Select
             return $e;
         }
         
-        foreach ($resultSet as $id => $object) {
-            $options[$id] = $object;
+        $options = [];
+        foreach ($resultSet as $object) {
+            $options[$object[$this->database_id_column]] = $object[$this->database_value_column];
         }
         
         $this->setValueOptions($options);
@@ -76,6 +82,7 @@ class DatabaseSelectObject extends Select
     public function setDatabase_table($database_table)
     {
         $this->database_table = $database_table;
+        return $this;
     }
 
     public function getDatabase_id_column()
@@ -86,6 +93,7 @@ class DatabaseSelectObject extends Select
     public function setDatabase_id_column($database_id_column)
     {
         $this->database_id_column = $database_id_column;
+        return $this;
     }
     
     public function getDatabase_value_column()
@@ -96,5 +104,6 @@ class DatabaseSelectObject extends Select
     public function setDatabase_value_column($database_value_column)
     {
         $this->database_value_column = $database_value_column;
+        return $this;
     }
 }

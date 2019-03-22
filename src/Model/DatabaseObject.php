@@ -12,9 +12,15 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Stdlib\Exception\RuntimeException;
+use Zend\Db\Sql\Predicate\Predicate;
+use Zend\Db\Sql\Where;
+use Zend\Db\ResultSet\ResultSet;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
+    const INACTIVE_STATUS = 0;
+    const ACTIVE_STATUS = 1;
+    
     protected $dbAdapter;
     protected $table;
     protected $inputFilter;
@@ -49,6 +55,7 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function getArrayCopy()
     {
+        $data = NULL;
         foreach ($this->public_attributes as $var) {
             $data[$var] = $this->{$var};
         }
@@ -63,6 +70,18 @@ class DatabaseObject implements InputFilterAwareInterface
     public function setTableName($table)
     {
         $this->table = $table;
+        return $this;
+    }
+    
+    public function getPrimaryKey()
+    {
+        return $this->primary_key;
+    }
+    
+    public function setPrimaryKey($primary_key)
+    {
+        $this->primary_key = $primary_key;
+        return $this;
     }
     
     public function setInputFilter(InputFilterInterface $inputFilter)
@@ -90,22 +109,29 @@ class DatabaseObject implements InputFilterAwareInterface
         return $this->inputFilter;
     }
     
-    public function fetchAll()
+    public function fetchAll(Predicate $predicate = null, array $order = [])
     {
+        if ($predicate == null) {
+            $predicate = new Where();
+        }
+        
         $sql = new Sql($this->dbAdapter);
         
         $select = new Select();
-        $select->from($this->table);;
+        $select->from($this->table);
+        $select->where($predicate);
+        $select->order($order);
         
         $statement = $sql->prepareStatementForSqlObject($select);
-        
+        $resultSet = new ResultSet();
         try {
-            $resultSet = $statement->execute();
+            $results = $statement->execute();
+            $resultSet->initialize($results);
         } catch (RuntimeException $e) {
             return $e;
         }
         
-        return $resultSet;
+        return $resultSet->toArray();
     }
 
     public function create()
@@ -120,7 +146,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($insert);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
@@ -160,7 +186,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($update);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
@@ -178,7 +204,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $statement = $sql->prepareStatementForSqlObject($delete);
         
         try {
-            $resultSet = $statement->execute();
+            $statement->execute();
         } catch (RuntimeException $e) {
             return $e;
         }
