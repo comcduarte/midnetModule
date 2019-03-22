@@ -10,7 +10,7 @@ use RuntimeException;
 class DatabaseSelectObject extends Select 
 {
     use AdapterAwareTrait;
-    
+   
     protected $database_table;
     protected $database_id_column;
     protected $database_value_column;
