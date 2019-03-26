@@ -87,8 +87,9 @@ class DatabaseObject implements InputFilterAwareInterface
     public static function getStatus($status) 
     {
         $statuses = [
-            self::INACTIVE_STATUS => "Inactive",
-            self::ACTIVE_STATUS => "Active",
+            NULL => 'Inactive',
+            self::INACTIVE_STATUS => 'Inactive',
+            self::ACTIVE_STATUS => 'Active',
         ];
         
         return $statuses[$status];
