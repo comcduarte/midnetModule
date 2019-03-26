@@ -84,6 +84,16 @@ class DatabaseObject implements InputFilterAwareInterface
         return $this;
     }
     
+    public static function getStatus($status) 
+    {
+        $statuses = [
+            self::INACTIVE_STATUS => "Inactive",
+            self::ACTIVE_STATUS => "Active",
+        ];
+        
+        return $statuses[$status];
+    }
+    
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new RuntimeException("Not Used");
