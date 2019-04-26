@@ -1,0 +1,54 @@
+<?= $this->doctype() ?>
+<?php if (!isset($title)) { $title = "Skeleton Application"; } ?>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?= $this->headTitle($title)->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?= $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendName('node', substr($_SERVER['SERVER_ADDR'], 8) )
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?= $this->headLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'])
+            ->headLink(['rel' => 'apple-touch-icon', 'href' => $this->basePath() . '/img/apple-touch-icon.png'])
+            ->prependStylesheet($this->basePath('css/style.css'), 'screen,print')
+            ->prependStylesheet('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', 'screen,print')
+            ->prependStylesheet('https://use.fontawesome.com/releases/v5.7.2/css/all.css', 'screen,print')
+        ?>
+
+        <!-- Scripts -->
+        <?= $this->headScript()
+            ->prependFile('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js')
+            ->prependFile('https://code.jquery.com/jquery-3.3.1.slim.min.js')
+        ?>
+    </head>
+    <body>
+    	<nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
+        	<a class="navbar-brand" href="<?= $this->url('home') ?>">
+        		<img src="<?= $this->basePath('img/cityseal.png') ?>" height="28" alt="Middletown, CT" />&nbsp;<?php echo $title; ?>
+        	</a>
+        	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        		<span class="navbar-toggler-icon"></span>
+        	</button>
+        	<div class="collapse navbar-collapse" id="navbarNav">
+        	<?= $this->navigation('Zend\Navigation\Default')->menu()->setPartial('navigation'); ?>
+    		</div>
+		</nav>
+        <div class="container mt-3">
+        <!-- Flash Messenger -->
+            <?php echo $this->partial('flashmessenger'); ?>
+        	
+            <?= $this->content ?>
+            <hr>
+            <footer id="footer">
+                &copy; <?= date('Y') ?> by City of Middletown, Connecticut. All rights reserved.
+            </footer>
+        </div>
+        <?= $this->inlineScript() 
+
+        ?>
+    </body>
+</html>

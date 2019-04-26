@@ -1,6 +1,14 @@
 <?php 
 
 return [
+    'navigation' => [
+        'default' => [
+            [
+                'label' => 'Home',
+                'route' => 'home',
+            ],
+        ],
+    ],
     'view_manager' => [
         'template_map' => [
             'navigation' => __DIR__ . '/../view/partials/navigation.phtml',
