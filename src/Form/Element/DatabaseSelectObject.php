@@ -49,6 +49,7 @@ class DatabaseSelectObject extends Select
             return $e;
         }
         
+        $options = [];
         $options['--- Unassigned ---'] = '--- Unassigned ---';
         foreach ($resultSet as $object) {
             $options[$object[$this->database_id_column]] = $object[$this->database_value_column];
