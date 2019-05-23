@@ -27,6 +27,10 @@ class DatabaseSelectObject extends Select
     
     public function populateElement()
     {
+        if (!isset($this->adapter)) {
+            throw new RuntimeException('Missing Adapter in Options');
+        }
+        
         $sql = new Sql($this->adapter);
         
         $select = new SqlSelect();
@@ -45,7 +49,7 @@ class DatabaseSelectObject extends Select
             return $e;
         }
         
-        $options = [];
+        $options['--- Unassigned ---'] = '--- Unassigned ---';
         foreach ($resultSet as $object) {
             $options[$object[$this->database_id_column]] = $object[$this->database_value_column];
         }
@@ -67,6 +71,10 @@ class DatabaseSelectObject extends Select
         
         if (isset($options['database_value_column'])) {
             $this->setDatabase_value_column($options['database_value_column']);
+        }
+        
+        if (isset($options['database_adapter'])) {
+            $this->setDbAdapter($options['database_adapter']);
         }
         
         $this->populateElement();
