@@ -18,7 +18,7 @@ use Zend\Db\ResultSet\ResultSet;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
-    const INACTIVE_STATUS = 0;
+    const INACTIVE_STATUS = 2;
     const ACTIVE_STATUS = 1;
     
     protected $dbAdapter;
@@ -28,6 +28,11 @@ class DatabaseObject implements InputFilterAwareInterface
     protected $public_attributes;
     protected $primary_key;
     protected $required;
+
+    public $UUID;
+    public $STATUS;
+    public $DATE_CREATED;
+    public $DATE_MODIFIED;
     
     public function __construct($dbAdapter = null)
     {
@@ -84,7 +89,7 @@ class DatabaseObject implements InputFilterAwareInterface
         return $this;
     }
     
-    public static function getStatus($status) 
+    public static function retrieveStatus($status) 
     {
         $statuses = [
             NULL => 'Inactive',
@@ -147,6 +152,9 @@ class DatabaseObject implements InputFilterAwareInterface
 
     public function create()
     {
+        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
+        
         $sql = new Sql($this->dbAdapter);
         $values = $this->getArrayCopy();
         
@@ -186,6 +194,9 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function update()
     {
+        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $this->DATE_MODIFIED = $date->format('Y-m-d H:i:s');
+        
         $sql = new Sql($this->dbAdapter);
         $values = $this->getArrayCopy();
         
