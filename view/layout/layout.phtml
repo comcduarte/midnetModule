@@ -1,9 +1,8 @@
 <?= $this->doctype() ?>
-<?php if (!isset($title)) { $title = "Skeleton Application"; } ?>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($title)->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle(\Application\Module::TITLE)->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -29,7 +28,7 @@
     <body>
     	<nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
         	<a class="navbar-brand" href="<?= $this->url('home') ?>">
-        		<img src="<?= $this->basePath('img/cityseal.png') ?>" height="28" alt="Middletown, CT" />&nbsp;<?php echo $title; ?>
+        		<img src="<?= $this->basePath('img/cityseal.png') ?>" height="28" alt="Middletown, CT" />&nbsp;<?= \Application\Module::TITLE ?>
         	</a>
         	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         		<span class="navbar-toggler-icon"></span>
@@ -45,7 +44,7 @@
             <?= $this->content ?>
             <hr>
             <footer id="footer">
-                &copy; <?= date('Y') ?> by City of Middletown, Connecticut. All rights reserved.
+                &copy; <?= date('Y') ?> by City of Middletown, Connecticut. All rights reserved. <?= \Application\Module::VERSION ?>
             </footer>
         </div>
         <?= $this->inlineScript() 
