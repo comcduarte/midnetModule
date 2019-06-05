@@ -1,20 +1,20 @@
 <?php
 namespace Midnet\Model;
 
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql as Sql;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Stdlib\Exception\RuntimeException;
-use Zend\Db\Sql\Predicate\Predicate;
-use Zend\Db\Sql\Where;
-use Zend\Db\ResultSet\ResultSet;
+use Exception;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
@@ -102,7 +102,7 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new RuntimeException("Not Used");
+        throw new Exception("Not Used");
     }
     
     public function getInputFilter()
@@ -143,7 +143,7 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $results = $statement->execute();
             $resultSet->initialize($results);
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         
@@ -166,7 +166,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $this;
@@ -184,7 +184,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $resultSet = $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         
@@ -209,7 +209,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $this;
@@ -227,7 +227,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return true;
