@@ -1,5 +1,5 @@
 <?php 
-namespace MidnetException;
+namespace Midnet\Exception;
 
 use Zend\Mvc\Exception\ExceptionInterface;
 
