@@ -1,24 +1,24 @@
 <?php
 namespace Midnet\Model;
 
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql as Sql;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Stdlib\Exception\RuntimeException;
-use Zend\Db\Sql\Predicate\Predicate;
-use Zend\Db\Sql\Where;
-use Zend\Db\ResultSet\ResultSet;
+use Exception;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
-    const INACTIVE_STATUS = 0;
+    const INACTIVE_STATUS = 2;
     const ACTIVE_STATUS = 1;
     
     protected $dbAdapter;
@@ -28,6 +28,11 @@ class DatabaseObject implements InputFilterAwareInterface
     protected $public_attributes;
     protected $primary_key;
     protected $required;
+
+    public $UUID;
+    public $STATUS;
+    public $DATE_CREATED;
+    public $DATE_MODIFIED;
     
     public function __construct($dbAdapter = null)
     {
@@ -84,9 +89,20 @@ class DatabaseObject implements InputFilterAwareInterface
         return $this;
     }
     
+    public static function retrieveStatus($status) 
+    {
+        $statuses = [
+            NULL => 'Inactive',
+            self::INACTIVE_STATUS => 'Inactive',
+            self::ACTIVE_STATUS => 'Active',
+        ];
+        
+        return $statuses[$status];
+    }
+    
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        throw new RuntimeException("Not Used");
+        throw new Exception("Not Used");
     }
     
     public function getInputFilter()
@@ -127,7 +143,7 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $results = $statement->execute();
             $resultSet->initialize($results);
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         
@@ -136,6 +152,9 @@ class DatabaseObject implements InputFilterAwareInterface
 
     public function create()
     {
+        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
+        
         $sql = new Sql($this->dbAdapter);
         $values = $this->getArrayCopy();
         
@@ -147,7 +166,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $this;
@@ -165,7 +184,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $resultSet = $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         
@@ -175,6 +194,9 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function update()
     {
+        $date = new \DateTime('now',new \DateTimeZone('EDT'));
+        $this->DATE_MODIFIED = $date->format('Y-m-d H:i:s');
+        
         $sql = new Sql($this->dbAdapter);
         $values = $this->getArrayCopy();
         
@@ -187,7 +209,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return $this;
@@ -205,7 +227,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         try {
             $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         return true;

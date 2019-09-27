@@ -5,7 +5,7 @@ use Zend\Db\Sql\Sql as Sql;
 use Zend\Db\Sql\Select as SqlSelect;
 use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Form\Element\Select;
-use RuntimeException;
+use Exception;
 
 class DatabaseSelectObject extends Select 
 {
@@ -27,6 +27,10 @@ class DatabaseSelectObject extends Select
     
     public function populateElement()
     {
+        if (!isset($this->adapter)) {
+            throw new Exception('Missing Adapter in Options');
+        }
+        
         $sql = new Sql($this->adapter);
         
         $select = new SqlSelect();
@@ -41,11 +45,12 @@ class DatabaseSelectObject extends Select
         
         try {
             $resultSet = $statement->execute();
-        } catch (RuntimeException $e) {
+        } catch (Exception $e) {
             return $e;
         }
         
         $options = [];
+        $options['--- Unassigned ---'] = '--- Unassigned ---';
         foreach ($resultSet as $object) {
             $options[$object[$this->database_id_column]] = $object[$this->database_value_column];
         }
@@ -67,6 +72,10 @@ class DatabaseSelectObject extends Select
         
         if (isset($options['database_value_column'])) {
             $this->setDatabase_value_column($options['database_value_column']);
+        }
+        
+        if (isset($options['database_adapter'])) {
+            $this->setDbAdapter($options['database_adapter']);
         }
         
         $this->populateElement();
