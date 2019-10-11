@@ -25,14 +25,14 @@ abstract class AbstractConfigController extends AbstractActionController impleme
     {
         $this->clearDatabase();
         $this->flashMessenger()->addSuccessMessage("Database tables cleared.");
-        return $this->redirect()->toRoute('ballots/config');
+        return $this->redirect()->toRoute($this->getRoute());
     }
     
     public function createAction()
     {
         $this->createDatabase();
         $this->flashMessenger()->addSuccessMessage("Database tables populated.");
-        return $this->redirect()->toRoute('ballots/config');
+        return $this->redirect()->toRoute($this->getRoute());
     }
     
     public function getRoute()
@@ -40,8 +40,9 @@ abstract class AbstractConfigController extends AbstractActionController impleme
         return $this->route;
     }
     
-    public function initialize()
+    public function setRoute($route)
     {
-        $this->setRoute();
+        $this->route = $route;
+        return $this;
     }
 }

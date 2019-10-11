@@ -7,5 +7,5 @@ interface ConfigControllerInterface
     
     public function clearDatabase();
     
-    public function setRoute();
+    public function setRoute($route);
 }
