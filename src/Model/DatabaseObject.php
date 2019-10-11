@@ -15,13 +15,15 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Exception;
+use Zend\Db\Adapter\AdapterAwareTrait;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
     const INACTIVE_STATUS = 2;
     const ACTIVE_STATUS = 1;
     
-    protected $dbAdapter;
+    use AdapterAwareTrait;
+    
     protected $table;
     protected $inputFilter;
     protected $private_attributes;
@@ -34,12 +36,12 @@ class DatabaseObject implements InputFilterAwareInterface
     public $DATE_CREATED;
     public $DATE_MODIFIED;
     
-    public function __construct($dbAdapter = null)
+    public function __construct($adapter = null)
     {
-        $this->dbAdapter = $dbAdapter;
+        $this->setDbAdapter($adapter);
         
         $this->private_attributes = [
-            'dbAdapter',
+            'adapter',                  //-- From AdapterAwareTrait --//
             'table',
             'inputFilter',
             'private_attributes',
@@ -131,7 +133,7 @@ class DatabaseObject implements InputFilterAwareInterface
             $predicate = new Where();
         }
         
-        $sql = new Sql($this->dbAdapter);
+        $sql = new Sql($this->adapter);
         
         $select = new Select();
         $select->from($this->table);
@@ -155,7 +157,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $date = new \DateTime('now',new \DateTimeZone('EDT'));
         $this->DATE_CREATED = $date->format('Y-m-d H:i:s');
         
-        $sql = new Sql($this->dbAdapter);
+        $sql = new Sql($this->adapter);
         $values = $this->getArrayCopy();
         
         $insert = new Insert();
@@ -174,7 +176,7 @@ class DatabaseObject implements InputFilterAwareInterface
     
     public function read(Array $criteria)
     {
-        $sql = new Sql($this->dbAdapter);
+        $sql = new Sql($this->adapter);
         
         $select = new Select();
         $select->from($this->table);
@@ -197,7 +199,7 @@ class DatabaseObject implements InputFilterAwareInterface
         $date = new \DateTime('now',new \DateTimeZone('EDT'));
         $this->DATE_MODIFIED = $date->format('Y-m-d H:i:s');
         
-        $sql = new Sql($this->dbAdapter);
+        $sql = new Sql($this->adapter);
         $values = $this->getArrayCopy();
         
         $update = new Update();
@@ -219,7 +221,7 @@ class DatabaseObject implements InputFilterAwareInterface
     {
         $prikey = $this->primary_key;
         
-        $sql = new Sql($this->dbAdapter);
+        $sql = new Sql($this->adapter);
         
         $delete = new Delete();
         $delete->from($this->table)->where(array($prikey => $this->$prikey));
