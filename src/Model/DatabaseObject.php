@@ -50,6 +50,8 @@ class DatabaseObject implements InputFilterAwareInterface
             'required',
         ];
         
+        $this->setPrimaryKey('UUID');
+        
         $this->public_attributes = array_diff(array_keys(get_object_vars($this)), $this->private_attributes);
     }
     
