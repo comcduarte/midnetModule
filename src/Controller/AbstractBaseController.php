@@ -99,7 +99,10 @@ class AbstractBaseController extends AbstractActionController
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $data = $request->getPost();
+            $data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+                );
             $this->form->setData($data);
             
             if ($this->form->isValid()) {
