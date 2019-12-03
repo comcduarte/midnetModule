@@ -148,7 +148,7 @@ class DatabaseObject implements InputFilterAwareInterface
             $results = $statement->execute();
             $resultSet->initialize($results);
         } catch (Exception $e) {
-            return $e;
+            return FALSE;
         }
         
         return $resultSet->toArray();
@@ -171,9 +171,9 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $statement->execute();
         } catch (Exception $e) {
-            return $e;
+            return FALSE;
         }
-        return $this;
+        return TRUE;
     }
     
     public function read(Array $criteria)
@@ -189,11 +189,15 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $resultSet = $statement->execute();
         } catch (Exception $e) {
-            return $e;
+            return FALSE;
         }
         
-        $this->exchangeArray($resultSet->current());
-        return $this;
+        if ($resultSet->getAffectedRows() == 0) {
+            return FALSE;
+        } else {
+            $this->exchangeArray($resultSet->current());
+            return TRUE;
+        }
     }
     
     public function update()
@@ -214,9 +218,9 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $statement->execute();
         } catch (Exception $e) {
-            return $e;
+            return FALSE;
         }
-        return $this;
+        return TRUE;
     }
     
     public function delete()
@@ -232,8 +236,8 @@ class DatabaseObject implements InputFilterAwareInterface
         try {
             $statement->execute();
         } catch (Exception $e) {
-            return $e;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 }
