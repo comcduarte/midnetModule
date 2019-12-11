@@ -1,6 +1,7 @@
 <?php
 namespace Midnet\Model;
 
+use Zend\Db\Adapter\AdapterAwareTrait;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
@@ -15,7 +16,6 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Exception;
-use Zend\Db\Adapter\AdapterAwareTrait;
 
 class DatabaseObject implements InputFilterAwareInterface
 {
@@ -168,6 +168,12 @@ class DatabaseObject implements InputFilterAwareInterface
         
         $statement = $sql->prepareStatementForSqlObject($insert);
         
+        $history = new HistoryModel($this->adapter);
+        $history->ACTION = "CREATE";
+        $history->TABLENAME = $this->getTableName();
+        $history->statement = $statement;
+        $history->record();
+        
         try {
             $statement->execute();
         } catch (Exception $e) {
@@ -215,6 +221,12 @@ class DatabaseObject implements InputFilterAwareInterface
         
         $statement = $sql->prepareStatementForSqlObject($update);
         
+        $history = new HistoryModel($this->adapter);
+        $history->ACTION = "UPDATE";
+        $history->TABLENAME = $this->getTableName();
+        $history->statement = $statement;
+        $history->record();
+        
         try {
             $statement->execute();
         } catch (Exception $e) {
@@ -232,6 +244,12 @@ class DatabaseObject implements InputFilterAwareInterface
         $delete = new Delete();
         $delete->from($this->table)->where(array($prikey => $this->$prikey));
         $statement = $sql->prepareStatementForSqlObject($delete);
+        
+        $history = new HistoryModel($this->adapter);
+        $history->ACTION = "DELETE";
+        $history->TABLENAME = $this->getTableName();
+        $history->statement = $statement;
+        $history->record();
         
         try {
             $statement->execute();
