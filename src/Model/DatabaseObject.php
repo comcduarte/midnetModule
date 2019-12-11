@@ -30,6 +30,7 @@ class DatabaseObject implements InputFilterAwareInterface
     protected $public_attributes;
     protected $primary_key;
     protected $required;
+    protected $current_user;
 
     public $UUID;
     public $STATUS;
@@ -48,6 +49,7 @@ class DatabaseObject implements InputFilterAwareInterface
             'public_attributes',
             'primary_key',
             'required',
+            'current_user',
         ];
         
         $this->setPrimaryKey('UUID');
@@ -80,6 +82,17 @@ class DatabaseObject implements InputFilterAwareInterface
     {
         $this->table = $table;
         return $this;
+    }
+    
+    public function setCurrentUser($user)
+    {
+        $this->current_user = $user;
+        return $this;
+    }
+    
+    public function getCurrentUser($user)
+    {
+        return $this->current_user;
     }
     
     public function getPrimaryKey()
@@ -170,6 +183,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         $history = new HistoryModel($this->adapter);
         $history->ACTION = "CREATE";
+        $history->USER = $this->current_user;
         $history->TABLENAME = $this->getTableName();
         $history->statement = $statement;
         $history->record();
@@ -223,6 +237,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         $history = new HistoryModel($this->adapter);
         $history->ACTION = "UPDATE";
+        $history->USER = $this->current_user;
         $history->TABLENAME = $this->getTableName();
         $history->statement = $statement;
         $history->record();
@@ -247,6 +262,7 @@ class DatabaseObject implements InputFilterAwareInterface
         
         $history = new HistoryModel($this->adapter);
         $history->ACTION = "DELETE";
+        $history->USER = $this->current_user;
         $history->TABLENAME = $this->getTableName();
         $history->statement = $statement;
         $history->record();

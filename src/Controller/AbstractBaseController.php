@@ -62,6 +62,8 @@ class AbstractBaseController extends AbstractActionController
             $this->form->setData($post);
             
             if ($this->form->isValid()) {
+                $user = $this->currentUser();
+                $this->model->setCurrentUser($user->USERNAME);
                 $this->model->create();
                 
                 $this->flashmessenger()->addSuccessMessage('Add New Record Successful');
@@ -106,6 +108,8 @@ class AbstractBaseController extends AbstractActionController
             $this->form->setData($data);
             
             if ($this->form->isValid()) {
+                $user = $this->currentUser();
+                $this->model->setCurrentUser($user->USERNAME);
                 $this->model->update();
                 
                 $this->flashmessenger()->addSuccessMessage('Update Successful');
@@ -129,6 +133,8 @@ class AbstractBaseController extends AbstractActionController
     {
         $primary_key = $this->getPrimaryKey();
         $this->model->read([$this->model->getPrimaryKey() => $primary_key]);
+        $user = $this->currentUser();
+        $this->model->setCurrentUser($user->USERNAME);
         $this->model->delete();
         
         $this->flashmessenger()->addSuccessMessage("Record Deleted.");

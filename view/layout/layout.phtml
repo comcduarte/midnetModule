@@ -63,6 +63,7 @@
         	</button>
         	<div class="collapse navbar-collapse" id="navbarNav">
         	<?= $this->navigation('Zend\Navigation\Default')->menu()->setPartial('navigation'); ?>
+        	<?= $this->navigation('Zend\Navigation\User')->menu()->setPartial('user/partial/navigation.phtml'); ?>
     		</div>
 		</nav>
         <div class="container mt-3">

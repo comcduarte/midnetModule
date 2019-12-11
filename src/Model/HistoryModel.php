@@ -47,12 +47,14 @@ class HistoryModel
         $insert->columns([
             'UUID',
             'ACTION',
+            'USER',
             'DATETIME',
             'TABLENAME',
             'QUERY',
         ])->values([
             $this->UUID,
             $this->ACTION,
+            $this->USER,
             $this->DATETIME,
             $this->TABLENAME,
             $query,
