@@ -1,9 +1,9 @@
 <?php 
 namespace Midnet\Form\Element;
 
-use Zend\Db\Sql\Sql as Sql;
-use Zend\Db\Sql\Select as SqlSelect;
 use Zend\Db\Adapter\AdapterAwareTrait;
+use Zend\Db\Sql\Select as SqlSelect;
+use Zend\Db\Sql\Sql;
 use Zend\Form\Element\Select;
 use Exception;
 
